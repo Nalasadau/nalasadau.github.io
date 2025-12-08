@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PartyApp - Создавай события на карте</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .main-cta {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: white;
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.3s backwards;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-note {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.5s backwards;
+        }
+
+        .store-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .store-button:hover {
+            transform: translateY(-3px);
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .store-icon {
+            font-size: 2rem;
+        }
+
+        .store-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .store-label {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .store-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .fomo-banner {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease 0.6s backwards;
+        }
+
+        .fomo-text {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .fomo-subtext {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .trust-section {
+            background: #f8f9fa;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .rating {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .users-count {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .features {
+            background: white;
+            padding: 5rem 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        .why-us {
+            background: white;
+            padding: 5rem 2rem;
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .why-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .why-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .why-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #667eea;
+        }
+
+        .why-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .testimonials {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 5rem 2rem;
+            color: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .testimonial-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-role {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .target-audience {
+            background: #f8f9fa;
+            padding: 5rem 2rem;
+        }
+
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .audience-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .audience-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .audience-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .audience-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .how-it-works {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 5rem 2rem;
+            color: white;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            max-width: 250px;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: white;
+            color: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .step h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .email-capture {
+            background: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .email-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .email-submit {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .email-submit:hover {
+            transform: translateY(-3px);
+        }
+
+        .security-note {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f0f4ff;
+            border-radius: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .security-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .security-text {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .cta-section {
+            background: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .phone-mockup {
+            margin: 3rem auto;
+            width: 320px;
+            height: 650px;
+            background: #1a1a1a;
+            border-radius: 45px;
+            padding: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 2;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 20px 20px;
+            color: white;
+            text-align: left;
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .app-location {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .map-container {
+            height: 250px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #cfd9ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-pin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            animation: bounce 2s ease infinite;
+        }
+
+        .map-pin::after {
+            content: '🎉';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            font-size: 0.8rem;
+        }
+
+        .map-pin:nth-child(1) { top: 30%; left: 25%; animation-delay: 0s; }
+        .map-pin:nth-child(2) { top: 50%; right: 30%; animation-delay: 0.5s; }
+        .map-pin:nth-child(3) { bottom: 30%; left: 45%; animation-delay: 1s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: rotate(-45deg) translateY(0); }
+            50% { transform: rotate(-45deg) translateY(-8px); }
+        }
+
+        .event-list {
+            padding: 20px;
+            background: white;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .event-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .event-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .event-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.2rem;
+        }
+
+        .event-details {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+        }
+
+        .nav-item {
+            font-size: 1.3rem;
+            opacity: 0.5;
+        }
+
+        .nav-item.active {
+            opacity: 1;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1.2rem; }
+            h2 { font-size: 2rem; }
+            .main-cta { font-size: 1.1rem; padding: 1rem 2rem; }
+            .email-form { flex-direction: column; }
+            .email-input, .email-submit { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>PartyApp</h1>
+            <p class="subtitle">Создавай и находи события рядом с тобой</p>
+            <!-- <a href="#download" class="main-cta">Скачать бесплатно</a> -->
+            <p class="cta-note">Начни за минуту</p>
+            <div class="cta-buttons">
+                <a href="#" class="store-button">
+                    <div class="store-icon">🍎</div>
+                    <div class="store-text">
+                        <span class="store-label">Загрузить в</span>
+                        <span class="store-name">App Store</span>
+                    </div>
+                </a>
+                <a href="#" class="store-button">
+                    <div class="store-icon">▶️</div>
+                    <div class="store-text">
+                        <span class="store-label">Доступно в</span>
+                        <span class="store-name">Google Play</span>
+                    </div>
+                </a>
+            </div>
+            <div class="fomo-banner">
+                <div class="fomo-text">Прямо сейчас рядом с вами проходят <span id="events-count">12</span> событий!</div>
+                <div class="fomo-subtext"><span id="urgent-count">3</span> начинаются в течение часа!</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-section">
+        <div class="container">
+            <div class="rating">4.8</div>
+            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+            <div class="users-count">Более 50 000 пользователей</div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Возможности</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>События на карте</h3>
+                    <p>Создавай событие за 30 секунд — просто выбери точку на карте. Пользователи увидят их в реальном времени.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Находи компанию</h3>
+                    <p>Ищи мероприятия в радиусе 1–3 км от тебя и знакомься с новыми людьми со схожими интересами.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Уведомления</h3>
+                    <p>Мгновенные пуш-уведомления о новых мероприятиях в твоем районе. Никогда не пропускай важные события.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-us">
+        <div class="container">
+            <h2>Почему мы?</h2>
+            <div class="why-grid">
+                <div class="why-item">
+                    <div class="why-icon">⚡</div>
+                    <h3>Создание за 30 секунд</h3>
+                    <p>Самое быстрое создание событий среди всех приложений</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">🗺️</div>
+                    <h3>Геолокация в реальном времени</h3>
+                    <p>Видишь события именно там, где они происходят</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">🎯</div>
+                    <h3>Умный подбор интересов</h3>
+                    <p>Интересы подбираются автоматически на основе твоих предпочтений</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">🔒</div>
+                    <h3>Полный контроль приватности</h3>
+                    <p>Ты решаешь, что и когда публиковать</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <h2>Отзывы</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">«Теперь я всегда знаю, что происходит поблизости. Нашла классные вечеринки и много новых друзей!»</p>
+                    <div class="testimonial-author">Алина</div>
+                    <div class="testimonial-role">22 года</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">«Создал футбольное событие — через 10 минут уже было 12 участников. Очень удобно.»</p>
+                    <div class="testimonial-author">Дамир</div>
+                    <div class="testimonial-role">25 лет</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">«Постоянно переезжаю, и PartyApp помогает быстро знакомиться с людьми в новом городе.»</p>
+                    <div class="testimonial-author">Саида</div>
+                    <div class="testimonial-role">19 лет</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="target-audience">
+        <div class="container">
+            <h2>Кому подходит PartyApp</h2>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">🏃</div>
+                    <h3>Любителям активного отдыха</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🌆</div>
+                    <h3>Новичкам в городе</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🤝</div>
+                    <h3>Тем, кто ищет компанию</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🎪</div>
+                    <h3>Организаторам событий</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <h2>Как это работает</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Скачай приложение</h3>
+                    <p>Доступно для iOS и Android</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Создай событие</h3>
+                    <p>Выбери место на карте и добавь детали</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Приглашай друзей</h3>
+                    <p>Поделись событием с друзьями и сообществом</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="email-capture">
+        <div class="container">
+            <h2>Получить ранний доступ</h2>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 1rem;">Получи эксклюзивные бонусы и будь в числе первых</p>
+            <form class="email-form" onsubmit="handleEmailSubmit(event)">
+                <input type="email" class="email-input" placeholder="Ваш email" required>
+                <button type="submit" class="email-submit">Получить доступ</button>
+            </form>
+            <div class="security-note">
+                <div class="security-icon">🔒</div>
+                <p class="security-text">Ваши данные защищены. Мы не публикуем локацию без вашего согласия.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="download">
+        <div class="container">
+            <h2>Начни использовать PartyApp уже сейчас</h2>
+        </div>
+            <div class="cta-buttons">
+                <a href="#" class="store-button">
+                    <div class="store-icon">🍎</div>
+                    <div class="store-text">
+                        <span class="store-label">Загрузить в</span>
+                        <span class="store-name">App Store</span>
+                    </div>
+                </a>
+                <a href="#" class="store-button">
+                    <div class="store-icon">▶️</div>
+                    <div class="store-text">
+                        <span class="store-label">Доступно в</span>
+                        <span class="store-name">Google Play</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+
+            <div class="footer-section">
+                <h3>PartyApp</h3>
+                <p style="color: rgba(255, 255, 255, 0.7);">
+                    Приложение для создания и поиска событий рядом с вами.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Навигация</h3>
+                <ul>
+                    <li><a href="#download">Скачать приложение</a></li>
+                    <li><a href="#features">Возможности</a></li>
+                    <li><a href="#how">Как это работает</a></li>
+                    <li><a href="#reviews">Отзывы</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Документы</h3>
+                <ul>
+                    <li><a href="#">Политика конфиденциальности</a></li>
+                    <li><a href="#">Пользовательское соглашение</a></li>
+                    <li><a href="#">Правила публикации событий</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Мы в соцсетях</h3>
+                <div class="social-links">
+                    <a href="#">📱</a>
+                    <a href="#">📷</a>
+                    <a href="#">▶️</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            © 2025 PartyApp. Все права защищены.
+        </div>
+    </footer>
+
+    <script>
+        function handleEmailSubmit(e) {
+            e.preventDefault();
+            alert("Спасибо! Вы получили ранний доступ.");
+        }
+
+        // FOMO randomizer (при желании можно убрать)
+        document.getElementById("events-count").textContent = 
+            Math.floor(10 + Math.random() * 10);
+        document.getElementById("urgent-count").textContent = 
+            Math.floor(2 + Math.random() * 4);
+    </script>
+
+</body>
+</html>
