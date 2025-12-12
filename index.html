@@ -3,43 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход</title>
+    <title>Demo QA</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5;
         }
-        .login-container {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .card {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 300px;
-        }
-        h2 {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
             text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        h5 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .menu {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .menu.active {
+            display: block;
+        }
+        h1 {
+            font-size: 32px;
             color: #333;
             margin-bottom: 30px;
         }
+        .menu-item {
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .menu-item:hover {
+            background: #e9ecef;
+        }
+        span {
+            font-size: 16px;
+            color: #495057;
+        }
+        .form-container {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .form-container.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
         input {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-sizing: border-box;
             font-size: 14px;
         }
         button {
-            width: 100%;
-            padding: 12px;
-            background: #667eea;
+            background: #007bff;
             color: white;
+            padding: 12px 30px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -47,53 +112,70 @@
             margin-top: 10px;
         }
         button:hover {
-            background: #5568d3;
-        }
-        .welcome {
-            display: none;
+            background: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Вход в систему</h2>
-        <input type="text" id="username" placeholder="Имя пользователя">
-        <input type="password" id="password" placeholder="Пароль">
-        <button id="login">Войти</button>
-        <div class="welcome" id="welcome"></div>
+    <div class="container">
+        <div class="cards" id="mainCards">
+            <div class="card" onclick="showForms()">
+                <h5>Forms</h5>
+                <p>Fill out various forms</p>
+            </div>
+            <div class="card">
+                <h5>Elements</h5>
+                <p>Interact with elements</p>
+            </div>
+            <div class="card">
+                <h5>Widgets</h5>
+                <p>Explore widgets</p>
+            </div>
+        </div>
+
+        <div class="menu" id="formsMenu">
+            <h1>Forms</h1>
+            <div class="menu-item" onclick="showPracticeForm()">
+                <span>Practice Form</span>
+            </div>
+        </div>
+
+        <div class="form-container" id="practiceForm">
+            <h1>Student Registration Form</h1>
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" id="firstName" placeholder="First Name">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" id="lastName" placeholder="Last Name">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="name@example.com">
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="mobile" placeholder="1234567890">
+            </div>
+            <button onclick="submitForm()">Submit</button>
+        </div>
     </div>
 
     <script>
-        // Список валидных учетных данных
-        const validUsers = [
-            { username: 'admin', password: 'admin123' },
-            { username: 'user1', password: 'pass123' },
-            { username: 'test', password: 'test456' },
-            { username: 'demo', password: 'demo789' }
-        ];
+        function showForms() {
+            document.getElementById('mainCards').style.display = 'none';
+            document.getElementById('formsMenu').classList.add('active');
+        }
 
-        document.getElementById('login').addEventListener('click', function() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        function showPracticeForm() {
+            document.getElementById('formsMenu').style.display = 'none';
+            document.getElementById('practiceForm').classList.add('active');
+        }
 
-            // Проверка учетных данных
-            const isValid = validUsers.some(user => 
-                user.username === username && user.password === password
-            );
-
-            if (isValid) {
-                document.querySelector('.login-container').innerHTML = '<div style="text-align: center; color: #333; font-size: 24px; padding: 20px;">Welcome, ' + username + '!</div>';
-            } else {
-                alert('Неверное имя пользователя или пароль');
-            }
-        });
-
-        // Обработка Enter
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('login').click();
-            }
-        });
+        function submitForm() {
+            alert('Форма отправлена!');
+        }
     </script>
 </body>
 </html>
