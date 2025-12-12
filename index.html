@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .welcome {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Вход в систему</h2>
+        <input type="text" id="username" placeholder="Имя пользователя">
+        <input type="password" id="password" placeholder="Пароль">
+        <button id="login">Войти</button>
+        <div class="welcome" id="welcome"></div>
+    </div>
+
+    <script>
+        // Список валидных учетных данных
+        const validUsers = [
+            { username: 'admin', password: 'admin123' },
+            { username: 'user1', password: 'pass123' },
+            { username: 'test', password: 'test456' },
+            { username: 'demo', password: 'demo789' }
+        ];
+
+        document.getElementById('login').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Проверка учетных данных
+            const isValid = validUsers.some(user => 
+                user.username === username && user.password === password
+            );
+
+            if (isValid) {
+                document.body.innerHTML = '<div style="text-align: center; color: white; font-size: 24px;">Welcome, ' + username + '!</div>';
+            } else {
+                alert('Неверное имя пользователя или пароль');
+            }
+        });
+
+        // Обработка Enter
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('login').click();
+            }
+        });
+    </script>
+</body>
+</html>
